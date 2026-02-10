@@ -1,0 +1,13 @@
+<div class="card-media">
+                            <img src="${pageContext.request.contextPath}/assets/img/placeholder.png"
+                                 alt="<%= pname %>">
+                        </div>
+
+INSERT INTO products(productname,price,description) VALUES
+('LENEVO',56785,'RAM:12 ROM: 256'),
+('LENEVO',36785,'RAM:8 ROM: 256'),
+('DELL',56785,'RAM:12 ROM: 256'),
+('DELL',46785,'RAM:8 ROM: 512'),
+('HP',67985,'RAM:12 ROM: 512'),
+('RedMi',36000,'RAM:12 ROM: 256'),
+('OnePlus',56785,'RAM:12 ROM: 512');
