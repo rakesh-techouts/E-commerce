@@ -14,6 +14,7 @@ public class Product {
     private String productName;
     private double price;
     private String description;
+    private String category;
 
     //setters and getters
     public int getId() {

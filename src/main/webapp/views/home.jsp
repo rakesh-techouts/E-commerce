@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"
-import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.dao.ProductsDao ,java.util.ArrayList" %>
+import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.dao.ProductsDao ,java.util.*" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 

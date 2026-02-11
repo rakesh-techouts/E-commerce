@@ -3,11 +3,17 @@
                                  alt="<%= pname %>">
                         </div>
 
-INSERT INTO products(productname,price,description) VALUES
-('LENEVO',56785,'RAM:12 ROM: 256'),
-('LENEVO',36785,'RAM:8 ROM: 256'),
-('DELL',56785,'RAM:12 ROM: 256'),
-('DELL',46785,'RAM:8 ROM: 512'),
-('HP',67985,'RAM:12 ROM: 512'),
-('RedMi',36000,'RAM:12 ROM: 256'),
-('OnePlus',56785,'RAM:12 ROM: 512');
+INSERT INTO products(productname,price,description,category) VALUES
+('LENEVO',56785,'RAM:12 ROM: 256','Laptop'),
+('LENEVO',36785,'RAM:8 ROM: 256','Laptop'),
+('DELL',56785,'RAM:12 ROM: 256','Laptop'),
+('DELL',46785,'RAM:8 ROM:256' ,'Laptop'),
+('HP',67985,'RAM:12 ROM: 512','Laptop'),
+('RedMi',36000,'RAM:12 ROM: 256','Mobile'),
+('RealMe C35',16000,'RAM:8 ROM: 128','Mobile'),
+('RealMe 15R',28000,'RAM:12 ROM: 128','Mobile'),
+('Samsung',31000,'RAM:12 ROM: 256','Mobile'),
+('Apple 17',86000,'RAM:12 ROM: 256','Mobile'),
+('Apple 15 Pro',65000,'RAM:12 ROM: 256','Mobile'),
+('OnePlus Nord CE-5',26000,'RAM:12 ROM: 256','Mobile'),
+('OnePlus',56785,'RAM:12 ROM: 512','Mobile');

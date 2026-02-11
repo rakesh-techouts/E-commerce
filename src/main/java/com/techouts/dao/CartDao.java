@@ -2,11 +2,13 @@ package com.techouts.dao;
 
 import com.techouts.HibernateUtil;
 import com.techouts.entity.Cart;
+import com.techouts.entity.CartItem;
 import com.techouts.entity.Product;
 import com.techouts.entity.Users;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.List;
 import java.util.Map;
 
 public class CartDao {
@@ -18,12 +20,13 @@ public class CartDao {
                     .setParameter("userId", user.getId())
                     .uniqueResult();
             if (cart != null) {
-                boolean alreadyExists = cart.getProducts().get(product)!=null?true:false;
+                boolean alreadyExists = cart.getCartItems()
+                        .stream().allMatch(cartItem -> cartItem.getProduct().getId() == product.getId());
                 if (alreadyExists) {
                     return false;
                 }
                 Transaction transaction = session.beginTransaction();
-                cart.addProduct(product);
+                cart.addProduct(new CartItem(product,1));
                 session.merge(cart);
                 transaction.commit();
                 return true;
@@ -31,18 +34,18 @@ public class CartDao {
         }
         return false;
     }
-    public static Map<Product,Integer> getAllProducts(Users user) {
+    public static List<CartItem> getAllProducts(Users user) {
         try (Session session = HibernateUtil.getSession()) {
             Cart cart = session.createQuery(
-                            "select c from Cart c left join fetch c.products where c.user.id = :userId",
+                            "SELECT c FROM Cart c WHERE c.user.id = :userId",
                             Cart.class)
                     .setParameter("userId", user.getId())
                     .uniqueResult();
-            return cart.getProducts();
+            return cart.getCartItems();
         }
     }
 
-    public static boolean removeProductFromCart(Users user, int productId) {
+    public static boolean removeProductFromCart(Users user, int cartItemId) {
         Cart cart;
         try (Session session = HibernateUtil.getSession()) {
             cart = session.createNativeQuery(
@@ -50,7 +53,7 @@ public class CartDao {
                     .setParameter("userId", user.getId())
                     .uniqueResult();
             if (cart != null) {
-                if(cart.getProducts().remove(session.get(Product.class, productId))!=null) {
+                if(cart.getCartItems().remove(session.get(CartItem.class, cartItemId))) {
                     Transaction transaction = session.beginTransaction();
                     session.merge(cart);
                     transaction.commit();

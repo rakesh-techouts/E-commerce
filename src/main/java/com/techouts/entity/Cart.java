@@ -12,10 +12,10 @@ public class Cart {
     private int cart_id;
     @OneToOne(cascade = CascadeType.ALL)
     private Users user;
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CartItem> cartItems = new ArrayList<>();
 
-
+    //Getters and Setters
     public Users getUser() {
         return user;
     }
