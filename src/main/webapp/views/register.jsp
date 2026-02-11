@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"  %>
+<%@ taglib uri="jakarta.tags.core" prefix="p" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,10 +31,11 @@
 
         <button type="submit" class="btn">Sign Up</button><br>
 
-        Already a User? <a href="login.jsp"> Login</a>
+        Already a User? <a href="${pageContext.request.contextPath}/views/login.jsp">Login</a>
+        <c:if test="${not empty errorMessage}">
+        <p style="color:red;">${errorMessage}</p>
+        </c:if>
     </form>
-
 </div>
-
 </body>
 </html>

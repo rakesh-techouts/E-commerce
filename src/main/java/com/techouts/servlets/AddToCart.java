@@ -2,7 +2,6 @@ package com.techouts.servlets;
 
 import com.techouts.dao.CartDao;
 import com.techouts.dao.ProductsDao;
-import com.techouts.entity.Cart;
 import com.techouts.entity.Product;
 import com.techouts.entity.Users;
 import jakarta.servlet.ServletException;
@@ -31,8 +30,11 @@ public class AddToCart extends HttpServlet {
 
         if(product != null && user != null) {
             if(CartDao.addProduct(user,product)){
-                out.print("<script>alert('Product added successfully!');</script>");
-                request.getRequestDispatcher("views/cart.jsp").forward(request, response);
+                request.setAttribute("successMessage", "Product added successfully!");
+                request.getRequestDispatcher("views/home.jsp").forward(request, response);
+            }else{
+                request.setAttribute("successMessage", "Product Already exists!");
+                request.getRequestDispatcher("views/home.jsp").forward(request, response);
             }
         }else{
 

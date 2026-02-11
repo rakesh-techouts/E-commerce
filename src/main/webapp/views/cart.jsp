@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"
 import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.dao.* ,java.util.*" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,30 +15,65 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
     HttpSession httpSession = request.getSession(false);
     Users user = (httpSession != null) ? (Users) httpSession.getAttribute("user") : null;
 %>
+<c:if test="${not empty successMessage and fn:length(fn:trim(successMessage)) > 0}">
+        <div id="popup"
+             style="
+                 position:fixed; top:10px; left:50%; transform:translateX(-50%);
+                 background:green; color:white; padding:10px 20px;
+                 border-radius:5px; z-index:9999; transition:opacity .5s ease;">
+            ${fn:escapeXml(successMessage)}
+        </div>
+        <script>
+            setTimeout(() => {
+                const el = document.getElementById('popup');
+                el.style.opacity = '0';
+                setTimeout(() => el.style.display = 'none', 500);
+            }, 2000);
+        </script>
+    </c:if>
+    <h4>${user.getUsername()} Your Cart is Waiting for you<h4>
+    <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/views/home.jsp">Home</a>
 <% if (user != null) { %>
-<div class="container my-3">
-  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+<div class="container-fluid px-0 my-3">
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-0">
     <%
-        List<Product> products =CartDao.getAllProducts(user);
-        if (products != null) {
-            for (Product product : products) {
+        Map<Product,Integer> products =CartDao.getAllProducts(user);
+        if (products != null && products.size()>0) {
+            Double totalPrice=0.0;
+            for (Product product : products.keySet()) {
     %>
       <div class="col">
         <div class="card h-100">
           <div class="card-body p-2">
             <h6 class="card-title mb-1 text-truncate"><%= product.getProductName() %></h6>
             <div class="product-price fw-bold mb-1">$ <%= product.getPrice() %></div>
+            <% totalPrice+=product.getPrice();%>
             <p class="card-text small mb-2" style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
               <%= product.getDescription() %>
             </p>
-            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/addToCart?id=<%= product.getId() %>">Add to Cart</a>
+            <div class="d-flex align-items-center mb-2 gap-2">
+                    <p style="font-family: 'Times New Roman', serif;">Quantity:</p>
+                    <button class="btn btn-sm btn-secondary"
+                            onclick="updateQty(<%= product.getId() %>, -1)">-</button>
+                            <% map.get(product);%>
+                    <span class="mx-2 fw-bold" id="qty_<%= product.getId() %>"></span>
+
+                    <button class="btn btn-sm btn-secondary"
+                            onclick="updateQty(<%= product.getId() %>, 1)">+</button>
+                    <a class="btn btn-danger btn-sm" href="${pageContext.request.contextPath}/removeFromCart?productId=<%= product.getId() %>">Delete</a>
+                </div>
           </div>
         </div>
       </div>
-    <%
-            }
-        } else {
-    %>
+         <% }%>
+<!-- Floating Total at bottom-right -->
+  <div class="position-fixed bottom-0 end-0 m-10">
+    <div class=" text-dark border-0 shadow rounded p-3 fw-bold">
+      Total Price: $ <%= String.format("%.2f", totalPrice) %>
+      <a class="btn btn-success btn-sm" href="${pageContext.request.contextPath}/placeOrder?totalPrice=<%= totalPrice %>">PlaceOrder</a>
+    </div>
+  </div>
+    <%} else {%>
       <div class="col-12">
         <h3 class="h6 text-muted m-0">No products available.</h3>
       </div>
@@ -46,7 +83,7 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
   </div>
 </div>
 <% } else { %>
-    <h3>Welcome Guest! <a href="<%= request.getContextPath() %>/views/register.jsp">Register</a></h3>
+    <h3>Welcome Guest! <a href="register.jsp">Register</a></h3>
 <% } %>
 </body>
 </html>

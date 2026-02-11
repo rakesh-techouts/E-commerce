@@ -5,12 +5,13 @@ import com.techouts.entity.Product;
 import org.hibernate.Session;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductsDao {
-    public static ArrayList<Product> getAllProducts() {
-        ArrayList<Product> products=null;
+    public static List<Product> getAllProducts() {
+        List<Product> products;
         try(Session session = HibernateUtil.getSession()) {
-            products =(ArrayList<Product>) session.createQuery("from Product",Product.class).list();
+            products = session.createQuery("from Product",Product.class).list();
         }
         return products;
     }

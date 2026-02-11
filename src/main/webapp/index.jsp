@@ -11,17 +11,17 @@
 <body>
     <h1 style="font-family: 'Times New Roman', serif;">Welcome to Tech-Outs Shopping</h1>
     <p style="font-family: 'Times New Roman', serif;">Worlds Number Shopping platform</p>
-    <a style="text-decoration: none"href="index.jsp">home</a><br>
-	<a style="text-decoration: none" href="views/login.jsp"> login</a><br>
-	<a style="text-decoration: none" href="views/register.jsp">register</a><br>
+    <a style="text-decoration: none"href="${pageContext.request.contextPath}/index.jsp">home</a><br>
+	<a style="text-decoration: none" href="${pageContext.request.contextPath}/views/login.jsp"> login</a><br>
+	<a style="text-decoration: none" href="${pageContext.request.contextPath}/views/register.jsp">register</a><br>
 </body>
 
 <h3 style="font-family: 'Times New Roman', serif;">Products in Techouts</h3>
-<div class="container my-3">
-  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+<div class="container-fluid px-0 my-3">
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-0">
     <%
-        ArrayList<Product> products = ProductsDao.getAllProducts();
-        if (products != null && !products.isEmpty()) {
+        List<Product> products = ProductsDao.getAllProducts();
+        if (products != null && products.size()>0) {
             for (Product product : products) {
     %>
       <div class="col">
@@ -32,7 +32,8 @@
             <p class="card-text small mb-2" style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
               <%= product.getDescription() %>
             </p>
-            <a class="btn btn-primary btn-sm" href="views/login.jsp">Add to Cart</a>
+            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/views/login.jsp">Add to Cart</a>
+            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/views/login.jsp">Buy Now</a>
           </div>
         </div>
       </div>

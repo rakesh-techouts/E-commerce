@@ -3,6 +3,7 @@ package com.techouts.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name="products")
@@ -13,9 +14,6 @@ public class Product {
     private String productName;
     private double price;
     private String description;
-
-    @ManyToMany(fetch=FetchType.LAZY)
-    private List<Cart> cart;
 
     //setters and getters
     public int getId() {
@@ -41,14 +39,6 @@ public class Product {
 
     public void setProductName(String productName) {
         this.productName = productName;
-    }
-
-    public List<Cart> getCart() {
-        return cart;
-    }
-
-    public void setCart(List<Cart> cart) {
-        this.cart = cart;
     }
 
 }

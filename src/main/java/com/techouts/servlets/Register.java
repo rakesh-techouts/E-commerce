@@ -26,7 +26,7 @@ public class Register extends HttpServlet {
         String confirmPassword = request.getParameter("confirmPassword");
         long phone = Long.parseLong(request.getParameter("phone"));
         if (email!=null && !(UserDao.isEmailExists(email))) {
-            if (password.equals(confirmPassword) && password.length() > 6 && confirmPassword.length() > 6) {
+            if (password.equals(confirmPassword) && password.length() > 6 ) {
                 try (Session session = HibernateUtil.getSession()) {
                     Transaction transaction = session.beginTransaction();
                         Users user = new Users();
@@ -36,26 +36,26 @@ public class Register extends HttpServlet {
                         user.setEmail(email);
                         Cart cart = new Cart();
                         cart.setUser(user);
+                        user.setCart(cart);
                         session.persist(user);
-                        session.persist(cart);
                         transaction.commit();
                         request.getSession(false).setAttribute("user", user);
                         request.getSession(false).setMaxInactiveInterval(30 * 60);
                         request.getRequestDispatcher("views/home.jsp").forward(request, response);
                     }catch (Exception e){
-                        out.println(e.getMessage());
-                        out.println("<a href='index.jsp'>Home</a><br>");
-                        out.println("<a href='views/register.jsp'>Register</a>");
+                        request.setAttribute("errorMessage",e.getMessage());
+                        request.getRequestDispatcher("views/register.jsp").forward(request, response);
                     }
             }else {
-                out.println("<h3> Your password is too short! or Not same as Confirm password! Please try again.</h3>");
-                out.println("<a href='index.jsp'>Home</a><br>");
-                out.println("<a href='views/register.jsp'>Register</a>");
+                if(password.equals(confirmPassword))
+                    request.setAttribute("errorMessage","Your password is Not same as Confirm password! Please try again.");
+                else
+                    request.setAttribute("errorMessage","Your password is too short! Please try again.");
+                request.getRequestDispatcher("views/register.jsp").forward(request, response);
             }
         }else{
-            out.println("<h3>User Already Exists! Please try again.</h3>");
-            out.println("<a href='index.jsp'>Home</a><br>");
-            out.println("<a href='views/register.jsp'>Register</a>");
+            request.setAttribute("errorMessage","User Already Exists! Please try again.");
+            request.getRequestDispatcher("views/register.jsp").forward(request, response);
         }
     }
 }

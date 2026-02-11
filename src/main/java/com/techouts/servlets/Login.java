@@ -28,14 +28,12 @@ public class Login extends HttpServlet {
                 request.getSession(false).setMaxInactiveInterval(30*60);
                 request.getRequestDispatcher("views/home.jsp").forward(request, response);
             }else{
-                out.println("<h3>Invalid UserName or Password</h3>");
-                out.println("<a href='index.jsp'>Home</a><br>");
-                out.println("<a href='views/login.jsp'>Login</a>");
+                request.setAttribute("errorMessage", "Invalid UserName or Password");
+                request.getRequestDispatcher("views/login.jsp").forward(request, response);
             }
         }catch (Exception e) {
-            out.println("<h3> "+e.getMessage()+" Error</h3>");
-            out.println("<a href='index.jsp'>Home</a><br>");
-            out.println("<a href='views/login.jsp'>Login</a>");
+            request.setAttribute("errorMessage", e.getMessage());
+            request.getRequestDispatcher("views/login.jsp").forward(request, response);
         }
     }
 }
