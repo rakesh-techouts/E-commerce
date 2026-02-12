@@ -9,24 +9,24 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
-import java.util.Map;
+
 
 public class CartDao {
     public static boolean addProduct(Users user, Product product) {
-        Cart cart;
         try (Session session = HibernateUtil.getSession()) {
-            cart = session.createNativeQuery(
-                            "SELECT * FROM cart WHERE user_id = :userId", Cart.class)
-                    .setParameter("userId", user.getId())
-                    .uniqueResult();
-            if (cart != null) {
-                boolean alreadyExists = cart.getCartItems()
-                        .stream().allMatch(cartItem -> cartItem.getProduct().getId() == product.getId());
-                if (alreadyExists) {
-                    return false;
+            Transaction transaction = session.beginTransaction();
+            Cart cart=getCartByUser(session , user);
+            if (cart != null && product != null) {
+                for(CartItem items : cart.getCartItems()) {
+                    if(items.getProduct().getId() == product.getId()){
+                        items.setQuantity(items.getQuantity()+1);
+                        session.merge(cart);
+                        transaction.commit();
+                        return true;
+                    }
                 }
-                Transaction transaction = session.beginTransaction();
-                cart.addProduct(new CartItem(product,1));
+                CartItem cartItem = new CartItem(product,1);
+                cart.getCartItems().add(cartItem);
                 session.merge(cart);
                 transaction.commit();
                 return true;
@@ -34,17 +34,22 @@ public class CartDao {
         }
         return false;
     }
-    public static List<CartItem> getAllProducts(Users user) {
+    public static List<CartItem> getAllCartItems(Users user) {
         try (Session session = HibernateUtil.getSession()) {
-            Cart cart = session.createQuery(
-                            "SELECT c FROM Cart c WHERE c.user.id = :userId",
-                            Cart.class)
-                    .setParameter("userId", user.getId())
-                    .uniqueResult();
-            return cart.getCartItems();
+            return getCartByUser(session , user).getCartItems();
         }
     }
-
+    public static Cart getCart(Users user){
+        try (Session session = HibernateUtil.getSession()) {
+            return getCartByUser(session , user);
+        }
+    }
+    public static Cart  getCartByUser(Session session,Users user) {
+        return session.createNativeQuery(
+                        "SELECT * FROM cart WHERE user_id = :userId", Cart.class)
+                .setParameter("userId", user.getId())
+                .uniqueResult();
+    }
     public static boolean removeProductFromCart(Users user, int cartItemId) {
         Cart cart;
         try (Session session = HibernateUtil.getSession()) {
@@ -62,5 +67,19 @@ public class CartDao {
             }
             return false;
         }
+    }
+    public static boolean deleteAllCartItems(Users user) {
+        try (Session session = HibernateUtil.getSession()) {
+            Cart cart=getCartByUser(session , user);
+            if(cart != null) {
+                Transaction transaction = session.beginTransaction();
+                cart.getCartItems().clear();
+                session.merge(user);
+                //session.merge(cart);
+                transaction.commit();
+                return true;
+            }
+        }
+        return false;
     }
 }

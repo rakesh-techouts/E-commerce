@@ -11,7 +11,7 @@
 <body>
     <h1 style="font-family: 'Times New Roman', serif;">Welcome to Tech-Outs Shopping</h1>
     <p style="font-family: 'Times New Roman', serif;">Worlds Number Shopping platform</p>
-    <a style="text-decoration: none"href="${pageContext.request.contextPath}/index.jsp">home</a><br>
+    <a style="text-decoration: none" href="${pageContext.request.contextPath}/index.jsp">home</a><br>
 	<a style="text-decoration: none" href="${pageContext.request.contextPath}/views/login.jsp"> login</a><br>
 	<a style="text-decoration: none" href="${pageContext.request.contextPath}/views/register.jsp">register</a><br>
 </body>

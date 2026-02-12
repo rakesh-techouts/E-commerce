@@ -26,7 +26,7 @@ public class Login extends HttpServlet {
             if(user != null && user.getEmail().equals(email) && user.getPassword().equals(password)) {
                 request.getSession(false).setAttribute("user", user);
                 request.getSession(false).setMaxInactiveInterval(30*60);
-                request.getRequestDispatcher("views/home.jsp").forward(request, response);
+                request.getRequestDispatcher("views/home.jsp?category=All").forward(request, response);
             }else{
                 request.setAttribute("errorMessage", "Invalid UserName or Password");
                 request.getRequestDispatcher("views/login.jsp").forward(request, response);

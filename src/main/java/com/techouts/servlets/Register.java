@@ -37,7 +37,7 @@ public class Register extends HttpServlet {
                 if(UserDao.addUser(user)) {
                     request.getSession(false).setAttribute("user", user);
                     request.getSession(false).setMaxInactiveInterval(30 * 60);
-                    request.getRequestDispatcher("views/home.jsp").forward(request, response);
+                    request.getRequestDispatcher("views/home.jsp?category=All").forward(request, response);
                 }
             }catch(Exception e){
                 request.setAttribute("errorMessage", e.getMessage());

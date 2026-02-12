@@ -23,5 +23,6 @@
         <mapping class="com.techouts.entity.Cart"/>
         <mapping class="com.techouts.entity.Product"/>
         <mapping class="com.techouts.entity.CartItem"/>
+        <mapping class="com.techouts.entity.Orders"/>
     </session-factory>
 </hibernate-configuration>

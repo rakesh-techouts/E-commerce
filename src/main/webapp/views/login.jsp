@@ -21,7 +21,7 @@
 
         <button type="submit">Log in</button>
 
-        <p>I dont have Account? </p> <a href="${pageContext.request.contextPath}/views/register.jsp">Register</a>
+        <p>I dont have Account? </p> <a href="${pageContext.request.contextPath}/views/register.jsp?category='All'">Register</a>
     </form>
         <c:if test="${not empty errorMessage}">
             <p style="color:red;">${errorMessage}</p>

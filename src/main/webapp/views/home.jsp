@@ -2,25 +2,88 @@
 import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.dao.ProductsDao ,java.util.*" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-
+<%
+    String category = request.getParameter("category");
+    List<Product> productsList;
+    if (category == null || category.trim().isEmpty() || category.equalsIgnoreCase("All")) {
+        productsList = ProductsDao.getAllProducts();
+    } else {
+        productsList = ProductsDao.getProductsByCategory(category.trim());
+    }
+    request.setAttribute("products", productsList);
+    request.setAttribute("category", category);
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Home | Ecommerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Button */
+    .dropdown-btn {
+        padding: 10px 14px;
+        background: #eee;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    /* Dropdown List Hidden Initially */
+    .dropdown-list {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 100%;
+        background: white;
+        border: 1px solid #ccc;
+        width: 180px;
+        border-radius: 5px;
+        z-index: 100;
+    }
+
+    /* Show on Hover */
+    .dropdown:hover .dropdown-list {
+        display: block;
+    }
+
+    /* Items */
+    .dropdown-item {
+        padding: 10px;
+        display: block;
+        text-decoration: none;
+        color: black;
+    }
+
+    .dropdown-item:hover {
+        background: #f1f1f1;
+    }
+       </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
+    <h1><a style="font-family: 'Times New Roman', serif;" style="text-decoration: none">Tech-Outs Mall</a></h1>
+    <a style="font-family: 'Times New Roman', serif;" style="text-decoration: none" href="${pageContext.request.contextPath}/views/cart.jsp" >Mycart</a>
+    <a style="font-family: 'Times New Roman', serif;" style="text-decoration: none" href="${pageContext.request.contextPath}/logout">Log out</a>
+<div class="dropdown">
+    <div class="dropdown-btn">Category</div>
+    <div class="dropdown-list">
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/views/home.jsp?category=All">All</a>
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/views/home.jsp?category=Laptop">Laptops</a>
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/views/home.jsp?category=Mobile">Mobiles</a>
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/views/home.jsp?category=Buds">Wireless Buds</a>
+    </div>
+</div>
 <%
     HttpSession httpSession = request.getSession(false);
     Users user = (httpSession != null) ? (Users) httpSession.getAttribute("user") : null;
-%>
-<% if (user != null) { %>
+    if (user != null) { %>
     <h4 style="font-family: 'Times New Roman', serif;"><%= user.getUsername() %>! Welcome to Tech-Outs Shopping</h4>
-    <a style="text-decoration:none" href="${pageContext.request.contextPath}/views/cart.jsp">MyCart</a><br>
-    <a style="text-decoration:none" href="${pageContext.request.contextPath}/logout">Log out</a>
-
     <!-- For print the Products --!>
     <h4 style="font-family: 'Times New Roman', serif;">Products in Techouts</h4>
 
@@ -44,7 +107,7 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
 <div class="container-fluid px-0 my-3">
   <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-0">
     <%
-      List<Product> products = ProductsDao.getAllProducts();
+      List<Product> products=(List<Product>) request.getAttribute("products");
       if (products != null && products.size()>0) {
         for (Product product : products) {
     %>
@@ -57,7 +120,7 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
               <%= product.getDescription() %>
             </p>
             <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/addToCart?id=<%= product.getId() %>">Add to Cart</a>
-            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/orderNow?id=<%= product.getId() %>">Buy Now</a>
+            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/views/checkOut.jsp?id=<%= product.getId() %>&msg=BuyNow">Buy Now</a>
           </div>
         </div>
       </div>

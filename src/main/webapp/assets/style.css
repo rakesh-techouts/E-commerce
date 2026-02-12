@@ -1,5 +1,0 @@
-.btn{
-  background: var(--brand); color:#fff; text-decoration: none; border: 1px solid var(--brand);
-  padding: 8px 12px; border-radius: 8px; font-size: 14px; display:inline-block;
-}
-.btn:hover{ background: var(--brand-600); border-color: var(--brand-600); }

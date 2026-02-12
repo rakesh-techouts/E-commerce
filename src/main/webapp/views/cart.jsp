@@ -31,36 +31,40 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
             }, 2000);
         </script>
     </c:if>
-    <h4>${user.getUsername()} Your Cart is Waiting for you<h4>
+    <h4>${user.getUsername()} Your Products are Waiting for you<h4>
     <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/views/home.jsp">Home</a>
 <% if (user != null) { %>
 <div class="container-fluid px-0 my-3">
   <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-0">
     <%
-        Map<Product,Integer> products =CartDao.getAllProducts(user);
-        if (products != null && products.size()>0) {
+        List<CartItem> cartItems =CartDao.getAllCartItems(user);
+        if (cartItems != null && cartItems.size()>0) {
             Double totalPrice=0.0;
-            for (Product product : products.keySet()) {
+            for (CartItem item : cartItems) {
     %>
       <div class="col">
         <div class="card h-100">
           <div class="card-body p-2">
-            <h6 class="card-title mb-1 text-truncate"><%= product.getProductName() %></h6>
-            <div class="product-price fw-bold mb-1">$ <%= product.getPrice() %></div>
-            <% totalPrice+=product.getPrice();%>
+            <h6 class="card-title mb-1 text-truncate"><%= item.getProduct().getProductName() %></h6>
+            <div class="product-price fw-bold mb-1">$ <%= item.getProduct().getPrice() %></div>
+            <% totalPrice+=(item.getProduct().getPrice()*item.getQuantity());%>
             <p class="card-text small mb-2" style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
-              <%= product.getDescription() %>
+              <%= item.getProduct().getDescription() %>
             </p>
             <div class="d-flex align-items-center mb-2 gap-2">
-                    <p style="font-family: 'Times New Roman', serif;">Quantity:</p>
-                    <button class="btn btn-sm btn-secondary"
-                            onclick="updateQty(<%= product.getId() %>, -1)">-</button>
-                            <% map.get(product);%>
-                    <span class="mx-2 fw-bold" id="qty_<%= product.getId() %>"></span>
-
-                    <button class="btn btn-sm btn-secondary"
-                            onclick="updateQty(<%= product.getId() %>, 1)">+</button>
-                    <a class="btn btn-danger btn-sm" href="${pageContext.request.contextPath}/removeFromCart?productId=<%= product.getId() %>">Delete</a>
+                    <p style="font-family: 'Times New Roman', serif; font-size:1.1rem">Quantity:</p>
+                    <form method="post" action="${pageContext.request.contextPath}/updateQuantity" style="display:inline;">
+                           <input type="hidden" name="item" value="<%=item.getId()%>">
+                           <input type="hidden" name="action" value="decrease">
+                           <button type="submit" class="btn btn-danger btn-sm">-</button>
+                    </form>
+                    <%=item.getQuantity()%>
+                    <form method="post" action="${pageContext.request.contextPath}/updateQuantity" style="display:inline;">
+                        <input type="hidden" name="item" value="<%=item.getId()%>">
+                        <input type="hidden" name="action" value="increase">
+                         <button type="submit" class="btn btn-success btn-sm">+</button>
+                    </form>
+                    <a class="btn btn-danger btn-sm" href="${pageContext.request.contextPath}/removeFromCart?productId=<%=item.getId() %>">Delete</a>
                 </div>
           </div>
         </div>
@@ -70,7 +74,7 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
   <div class="position-fixed bottom-0 end-0 m-10">
     <div class=" text-dark border-0 shadow rounded p-3 fw-bold">
       Total Price: $ <%= String.format("%.2f", totalPrice) %>
-      <a class="btn btn-success btn-sm" href="${pageContext.request.contextPath}/placeOrder?totalPrice=<%= totalPrice %>">PlaceOrder</a>
+      <a class="btn btn-success btn-sm" href="${pageContext.request.contextPath}/views/checkOut.jsp?msg=PlaceOrder">PlaceOrder</a>
     </div>
   </div>
     <%} else {%>
