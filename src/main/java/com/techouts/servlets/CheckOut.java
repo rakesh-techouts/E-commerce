@@ -10,12 +10,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
 @WebServlet("/checkOut")
 public class CheckOut extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
         Users user = (Users) request.getSession().getAttribute("user");
         String address = request.getParameter("address");
         String paymentMethod = request.getParameter("paymentMethod");
@@ -24,11 +26,10 @@ public class CheckOut extends HttpServlet {
         if(user!=null){
             OrderDao.createOrder(user.getId(),address,paymentMethod,amount,date);
             response.getWriter().println("Order has been created");
-            String contextPath = request.getContextPath();
-            response.getWriter().println("<a href='" + contextPath + "/views/home.jsp'><-Continue Shopping</a>");
-            ;
+            response.getWriter().println("<br><a href='" + request.getContextPath()+ "/views/home.jsp'><-Continue Shopping</a>");
         }else{
-
+            out.println("Order has not been created");
+            out.println("<br><a href='" + request.getContextPath() + "/views/home.jsp'><-Continue Shopping</a>");
         }
     }
 }

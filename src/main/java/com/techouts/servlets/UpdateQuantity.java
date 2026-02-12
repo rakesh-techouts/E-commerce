@@ -20,10 +20,10 @@ public class UpdateQuantity extends HttpServlet {
         System.out.println(cartItemId);
         if(action.equalsIgnoreCase("increase")){
             CartItemDao.increaseItem(cartItemId);
-            request.getRequestDispatcher("views/cart.jsp").forward(request,response);
+            response.sendRedirect("views/cart.jsp");
         }else{
             CartItemDao.decreaseItem(cartItemId);
-            request.getRequestDispatcher("views/cart.jsp").forward(request,response);
+            response.sendRedirect("views/cart.jsp");
         }
     }
 }

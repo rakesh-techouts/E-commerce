@@ -30,11 +30,11 @@ public class AddToCart extends HttpServlet {
 
         if(product != null && user != null) {
             if(CartDao.addProduct(user,product)){
-                request.setAttribute("successMessage", "Product added successfully!");
-                request.getRequestDispatcher("views/home.jsp?category=All").forward(request, response);
+                request.getSession(false).setAttribute("successMessage", "Product added successfully!");
+                response.sendRedirect("views/home.jsp?category=All");
             }else{
-                request.setAttribute("successMessage", "Product Already exists!");
-                request.getRequestDispatcher("views/home.jsp").forward(request, response);
+                request.getSession(false).setAttribute("successMessage", "Product Already exists!");
+                response.sendRedirect("views/home.jsp");
             }
         }else{
 

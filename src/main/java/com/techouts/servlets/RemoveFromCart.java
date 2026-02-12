@@ -18,7 +18,6 @@ public class RemoveFromCart extends HttpServlet {
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         int productId = Integer.parseInt(request.getParameter("productId"));
         Users user = (Users) request.getSession().getAttribute("user");
         if(CartDao.removeProductFromCart(user,productId)){

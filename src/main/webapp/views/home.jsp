@@ -69,6 +69,7 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
 <body>
     <h1><a style="font-family: 'Times New Roman', serif;" style="text-decoration: none">Tech-Outs Mall</a></h1>
     <a style="font-family: 'Times New Roman', serif;" style="text-decoration: none" href="${pageContext.request.contextPath}/views/cart.jsp" >Mycart</a>
+
     <a style="font-family: 'Times New Roman', serif;" style="text-decoration: none" href="${pageContext.request.contextPath}/logout">Log out</a>
 <div class="dropdown">
     <div class="dropdown-btn">Category</div>
@@ -84,7 +85,6 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
     Users user = (httpSession != null) ? (Users) httpSession.getAttribute("user") : null;
     if (user != null) { %>
     <h4 style="font-family: 'Times New Roman', serif;"><%= user.getUsername() %>! Welcome to Tech-Outs Shopping</h4>
-    <!-- For print the Products --!>
     <h4 style="font-family: 'Times New Roman', serif;">Products in Techouts</h4>
 
     <c:if test="${not empty successMessage and fn:length(fn:trim(successMessage)) > 0}">
@@ -102,6 +102,7 @@ import="com.techouts.entity.* , jakarta.servlet.http.HttpSession , com.techouts.
                 setTimeout(() => el.style.display = 'none', 500);
             }, 2000);
         </script>
+        <c:remove var="successMessage" scope="session"/>
     </c:if>
 
 <div class="container-fluid px-0 my-3">
